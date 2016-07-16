@@ -90,3 +90,21 @@ cmp_deeply
 	$tree->del_node( 5 )
 	,[]
 	,"Delete not existing node from the Tree::";
+
+
+cmp_deeply
+	$tree->del_node( 4 )
+	,[ { id =>  4,  parent_id =>  1 } ]
+	,"Delete leaf from the Tree::";
+
+cmp_deeply
+	$tree
+	,noclass({ root =>  { id =>  1 }, nodes =>  {()
+		,1 =>  { id =>  1 }
+		,2 =>  { id =>  2,  parent_id =>  1 }
+		,3 =>  { id =>  3,  parent_id =>  2 }
+	} })
+	,"Check nodes after leaf delation from the Tree::";
+
+
+

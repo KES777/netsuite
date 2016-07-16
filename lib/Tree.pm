@@ -89,6 +89,10 @@ sub del_node {
 	}
 
 
+	my $deleted_nodes =  [ delete $self->{ nodes }{ $id } ];
+
+
+	return $deleted_nodes;
 }
 
 
