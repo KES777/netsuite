@@ -70,7 +70,8 @@ sub add_node {
 		$self->root( $node );
 	}
 
-	$self->{ nodes }{ $node->{ id } } =  $node;
+
+	return $self->{ nodes }{ $node->{ id } } =  $node;
 }
 
 
