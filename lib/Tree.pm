@@ -1,5 +1,6 @@
 package Tree;
 
+use v5.24;
 use strict;
 use warnings;
 
@@ -90,6 +91,19 @@ sub del_node {
 
 
 	my $deleted_nodes =  [ delete $self->{ nodes }{ $id } ];
+
+	# Delete all branches and leaves of deleted node
+	for my $node_id ( keys $self->{ nodes }->%* ) {
+		my $node =  $self->{ nodes }{ $node_id };
+
+		next   unless $node;         # Node was deleted by recursive call
+
+		next   unless                         # Skip delatoin for ...
+			$node->{ parent_id  }             # ...root node
+			&&  $node->{ parent_id } eq $id;  # ...not children nodes
+
+		push @$deleted_nodes, $self->del_node( $node_id )->@*;
+	}
 
 
 	return $deleted_nodes;

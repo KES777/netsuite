@@ -108,3 +108,14 @@ cmp_deeply
 
 
 
+cmp_deeply
+	$tree->del_node( 2 )
+	,[ { id =>  2,  parent_id =>  1 }, { id =>  3,  parent_id =>  2 } ]
+	,"Delete branch from the Tree::";
+
+cmp_deeply
+	$tree
+	,noclass({ root =>  { id =>  1 }, nodes =>  {()
+		,1 =>  { id =>  1 }
+	} })
+	,"Check nodes after branch delation from the Tree::";
