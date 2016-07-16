@@ -43,6 +43,7 @@ cmp_deeply
 	,"Root node can not have parent\n"
 	,"Root node can not have parent";
 
+
 $tree =  Tree::->new();
 $tree->add_node( { id =>  1 } );
 cmp_deeply
@@ -67,3 +68,17 @@ is
 	$@ =~ s/ at.*$//r                                               #/
 	,"No such parent in the Tree::\n"
 	,"Parent node should exists in the Tree::";
+
+
+$tree->add_node( { id =>  2, parent_id =>  1 } );
+$tree->add_node( { id =>  3, parent_id =>  2 } );
+$tree->add_node( { id =>  4, parent_id =>  1 } );
+cmp_deeply
+	$tree
+	,noclass({ root =>  { id =>  1 }, nodes =>  {()
+		,1 =>  { id =>  1 }
+		,2 =>  { id =>  2,  parent_id =>  1 }
+		,3 =>  { id =>  3,  parent_id =>  2 }
+		,4 =>  { id =>  4,  parent_id =>  1 }
+	} })
+	,"Add leaves into the Tree::";
