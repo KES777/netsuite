@@ -90,6 +90,7 @@ sub del_node {
 	}
 
 
+	$self->{ nodes }{ $id }{ parent_id }  //  $self->root( undef );
 	my $deleted_nodes =  [ delete $self->{ nodes }{ $id } ];
 
 	# Delete all branches and leaves of deleted node

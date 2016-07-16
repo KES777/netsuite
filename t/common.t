@@ -119,3 +119,30 @@ cmp_deeply
 		,1 =>  { id =>  1 }
 	} })
 	,"Check nodes after branch delation from the Tree::";
+
+
+
+cmp_deeply
+	$tree->del_node( 1 )
+	# We do not require parent_id key should exist for root node
+	,[ subhashof({ id =>  1,  parent_id =>  undef }) ]
+	,"Delete root node from the Tree:: when only root node exists";
+
+cmp_deeply
+	$tree
+	,noclass({ root =>  undef, nodes =>  {} })
+	,"Check the Tree:: after root delation";
+
+
+$tree->add_node({ id =>  1 });
+$tree->add_node({ id =>  2, parent_id =>  1 });
+cmp_deeply
+	$tree->del_node( 1 )
+	# We do not require parent_id key should exist for root node
+	,[ subhashof({ id =>  1, parent_id => undef }), { id =>  2, parent_id =>  1 } ]
+	,"Delete root node from the Tree:: when children nodes exist";
+
+cmp_deeply
+	$tree
+	,noclass({ root =>  undef, nodes =>  {} })
+	,"Check the Tree:: after root delation";
