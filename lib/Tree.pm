@@ -59,6 +59,9 @@ sub add_node {
 	if( $self->root ) {
 		$node->{ parent_id }  //
 			die "Tree:: can contain only one root node";
+
+		!exists $self->{ nodes }{ $node->{ parent_id } }  and
+			die "No such parent in the Tree::";
 	}
 	else {
 		$node->{ parent_id }  and

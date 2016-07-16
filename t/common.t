@@ -61,3 +61,9 @@ is
 	$@ =~ s/ at.*$//r                                               #/
 	,"Node with specified ID already in the Tree::\n"
 	,"Tree:: can not contain nodes with same ID";
+
+eval{ $tree->add_node( { id =>  3, parent_id =>  2 } ) };
+is
+	$@ =~ s/ at.*$//r                                               #/
+	,"No such parent in the Tree::\n"
+	,"Parent node should exists in the Tree::";
