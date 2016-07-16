@@ -52,6 +52,9 @@ sub add_node {
 	$node->{ parent_id }  &&  $node->{ id } == $node->{ parent_id }  and
 		die "Node can not refer to itself";
 
+	exists $self->{ nodes }{ $node->{ id } }  and
+		die "Node with specified ID already in the Tree::";
+
 
 	if( $self->root ) {
 		$node->{ parent_id }  //
@@ -63,10 +66,6 @@ sub add_node {
 
 		$self->root( $node );
 	}
-
-
-	exists $self->{ nodes }{ $node->{ id } }  and
-		die "Node with specified ID already in the Tree::";
 
 	$self->{ nodes }{ $node->{ id } } =  $node;
 }

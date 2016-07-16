@@ -50,7 +50,7 @@ cmp_deeply
 	,noclass({ root =>  { id =>  1 }, nodes =>  {  1 =>  { id =>  1 } } })
 	,"Add root node to the empty Tree::";
 
-eval{ $tree->add_node( { id =>  1 } ) };
+eval{ $tree->add_node( { id =>  2 } ) };
 is
 	$@ =~ s/ at.*$//r                                               #/
 	,"Tree:: can contain only one root node\n"
