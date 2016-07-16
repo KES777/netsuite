@@ -6,6 +6,9 @@ use warnings;
 use Scalar::Util 'blessed';
 
 
+our $DEBUG;
+
+
 
 sub new {
 	my $class =  shift;
@@ -77,6 +80,14 @@ sub add_node {
 
 
 sub del_node {
+	my( $self, $id ) =  @_;
+
+	if( !$self->{ nodes }{ $id } ) {
+		warn "No such node"   if $DEBUG;
+
+		return [];
+	}
+
 
 }
 

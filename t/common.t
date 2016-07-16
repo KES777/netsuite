@@ -82,3 +82,11 @@ cmp_deeply
 		,4 =>  { id =>  4,  parent_id =>  1 }
 	} })
 	,"Add leaves into the Tree::";
+
+
+
+## Node delation tests
+cmp_deeply
+	$tree->del_node( 5 )
+	,[]
+	,"Delete not existing node from the Tree::";
