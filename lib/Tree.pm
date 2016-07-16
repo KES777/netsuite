@@ -83,19 +83,20 @@ sub add_node {
 sub del_node {
 	my( $self, $id ) =  @_;
 
-	if( !$self->{ nodes }{ $id } ) {
+	my $nodes =  $self->{ nodes };
+	if( !$nodes->{ $id } ) {
 		warn "No such node"   if $DEBUG;
 
 		return [];
 	}
 
 
-	$self->{ nodes }{ $id }{ parent_id }  //  $self->root( undef );
-	my $deleted_nodes =  [ delete $self->{ nodes }{ $id } ];
+	$nodes->{ $id }{ parent_id }  //  $self->root( undef );
+	my $deleted_nodes =  [ delete $nodes->{ $id } ];
 
 	# Delete all branches and leaves of deleted node
-	for my $node_id ( keys $self->{ nodes }->%* ) {
-		my $node =  $self->{ nodes }{ $node_id };
+	for my $node_id ( keys $nodes->%* ) {
+		my $node =  $nodes->{ $node_id };
 
 		next   unless $node;         # Node was deleted by recursive call
 
