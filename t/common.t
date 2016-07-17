@@ -57,6 +57,12 @@ is
 	,"Tree:: can contain only one root node\n"
 	,"Tree:: can contain only one root node";
 
+eval{ $tree->add_node( { id =>  2, parent_id =>  0 } ) };
+cmp_deeply
+	$@ =~ s/ at.*$//r                                               #/
+	,"No such parent in the Tree::\n"
+	,"Allow false value as parent_id";
+
 eval{ $tree->add_node( { id =>  1, parent_id =>  2 } ) };
 is
 	$@ =~ s/ at.*$//r                                               #/
