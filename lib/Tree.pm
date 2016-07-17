@@ -23,13 +23,18 @@ sub traverse(&@) {
 
 	$level //=  0;
 
+	my $result =  [];
 
 	local $_ =  $curr_node;
-	$self->$code( $level );                  # Call $code in context of $self
+	push @$result, $self->$code( $level ); # Call $code in context of $self
 
 	for my $next_node ( $curr_node->{ children }->@* ) {
-		__SUB__->( $code, $self, $next_node , $level +1 );
+		push @$result,
+			__SUB__->( $code, $self, $next_node , $level +1 )->@*;
 	}
+
+
+	return $result;
 }
 
 
