@@ -30,9 +30,29 @@ sub _init {
 
 	if( ref $nodes  eq  'ARRAY' ) {
 		for my $node ( @$nodes ) {
-			$self->add_node( $node );
+			$self->add_node( $node, 1 );
+			$self->check_broken( $node );
 		}
+
+		#TODO: implement Tree:: validation
+		keys $self->{ broken }->%*   and
+			die "Tree:: contain orphan nodes";
+
+		delete $self->{ broken };
 	}
+}
+
+
+sub check_broken {
+	my( $self, $node ) =  @_;
+
+	return   unless $node;
+
+	if( exists $self->{ broken }{ $node->{ id } } ) {
+		my $children =  delete $self->{ broken }{ $node->{ id } };
+		push $node->{ children }->@*, $children->@*;
+	}
+
 }
 
 

@@ -53,6 +53,16 @@ cmp_deeply
 	})
 	,"Create orphan node in the Tree::";
 
+eval{  $tree =  Tree::->new([()
+	,{ id =>  1, parent_id => undef }
+	,{ id =>  5, parent_id => 0 }
+])};
+cmp_deeply
+	$@ =~ s/ at.*$//r                                               #/
+	,"Tree:: contain orphan nodes\n"
+	,"Tree:: should not contain orphan nodes after creation";
+
+
 
 $tree =  Tree::->new();
 $tree->add_node( { id =>  1 } );
@@ -162,3 +172,29 @@ cmp_deeply
 	$tree
 	,noclass({ root =>  undef, nodes =>  {} })
 	,"Check the Tree:: after root delation";
+
+
+
+$tree =  Tree::->new([()
+	,{ id =>  4, parent_id =>  1 }
+	,{ id =>  3, parent_id =>  2 }
+	,{ id =>  2, parent_id =>  1 }
+	,{ id =>  1, parent_id =>  undef }
+]);
+cmp_deeply
+	$tree
+	,noclass({()
+		,root  =>  subhashof({ id =>  1, parent_id =>  undef, children =>  [()
+			,{ id =>  4, parent_id =>  1 }
+			,{ id =>  2, parent_id =>  1, children => [()
+				,{ id =>  3, parent_id =>  2 }
+			]}
+		]})
+		,nodes =>  {()
+			,1 =>  { id =>  1, parent_id =>  undef, children =>  ignore() }
+			,2 =>  { id =>  2, parent_id =>  1,     children =>  ignore() }
+			,3 =>  { id =>  3, parent_id =>  2 }
+			,4 =>  { id =>  4, parent_id =>  1 }
+		}
+	})
+	,"Allow passing of unordered nodes into constructor";
