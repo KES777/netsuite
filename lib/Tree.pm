@@ -18,7 +18,7 @@ my @NODE_PROPERTIES =  qw/ id parent_id /;
 
 
 sub traverse(&@) {
-	my( $code, $self, $curr_node, $level ) =  @_;
+	my( $code, $curr_node, $level ) =  @_;
 
 	$curr_node  //
 		die "Starting node should be supplied to traverse the Tree::";
@@ -28,11 +28,11 @@ sub traverse(&@) {
 	my $result =  [];
 
 	local $_ =  $curr_node;
-	push @$result, $self->$code( $level ); # Call $code in context of $self
+	push @$result, $code->( $level );
 
 	for my $next_node ( $curr_node->{ children }->@* ) {
 		push @$result,
-			__SUB__->( $code, $self, $next_node , $level +1 )->@*;
+			__SUB__->( $code, $next_node , $level +1 )->@*;
 	}
 
 
@@ -176,7 +176,7 @@ sub del_node {
 	# Traverse subtree to get all deleted nodes
 	(my $deleted_nodes)->@* =
 		map{ { $_->%{ @NODE_PROPERTIES } } } # Remove internal data from nodes
-		(traverse{ $_ } $self, $sub_tree)->@*;
+		(traverse{ $_ } $sub_tree)->@*;
 
 	# Remove links from the tree to deleted children
 	my @ids =  map{ $_->{ id } } @$deleted_nodes;
@@ -202,12 +202,12 @@ sub nodes_at_level {
 	my $nodes;
 	unless( $self->{ _level } ) {
 		$nodes =  traverse {
-			my( $tree, $node_level ) =  @_;
+			my( $node_level ) =  @_;
 
-			push $tree->{ _level }[ $node_level ]->@*, $_;
+			push $self->{ _level }[ $node_level ]->@*, $_;
 
 			return $_;
-		} $self, $self->root;
+		} $self->root;
 	}
 
 	$nodes =  $self->{ _level }[ $level ]   if defined $level;
