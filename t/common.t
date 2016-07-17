@@ -101,12 +101,24 @@ $tree->add_node( { id =>  3, parent_id =>  2 } );
 $tree->add_node( { id =>  4, parent_id =>  1 } );
 cmp_deeply
 	$tree
-	,noclass({ root =>  { id =>  1 }, nodes =>  {()
-		,1 =>  { id =>  1 }
-		,2 =>  { id =>  2,  parent_id =>  1 }
-		,3 =>  { id =>  3,  parent_id =>  2 }
-		,4 =>  { id =>  4,  parent_id =>  1 }
-	} })
+	,noclass({()
+		,root  =>  subhashof({()
+			,id =>  1, parent_id =>  undef, children =>  ignore()
+		})
+		,nodes =>  {()
+			,1 =>  subhashof({ id =>  1, parent_id =>  undef, children =>  [()
+				,{ id =>  2, parent_id =>  1, children => [()
+					,{ id =>  3, parent_id =>  2 }
+				]}
+				,{ id =>  4, parent_id =>  1 }
+			]})
+			,2 =>  { id =>  2,  parent_id =>  1, children =>  [()
+				,{ id =>  3, parent_id =>  2 }
+			]}
+			,3 =>  { id =>  3,  parent_id =>  2 }
+			,4 =>  { id =>  4,  parent_id =>  1 }
+		}
+	})
 	,"Add leaves into the Tree::";
 
 
@@ -125,24 +137,42 @@ cmp_deeply
 
 cmp_deeply
 	$tree
-	,noclass({ root =>  { id =>  1 }, nodes =>  {()
-		,1 =>  { id =>  1 }
-		,2 =>  { id =>  2,  parent_id =>  1 }
-		,3 =>  { id =>  3,  parent_id =>  2 }
-	} })
+	,noclass({()
+		,root  =>  subhashof({()
+			,id =>  1, parent_id =>  undef, children =>  ignore()
+		})
+		,nodes =>  {()
+			,1 =>  subhashof({ id =>  1, parent_id =>  undef, children =>  [()
+				,{ id =>  2, parent_id =>  1, children => [()
+					,{ id =>  3, parent_id =>  2 }
+				]}
+			]})
+			,2 =>  { id =>  2,  parent_id =>  1, children =>  [()
+				,{ id =>  3, parent_id =>  2 }
+			]}
+			,3 =>  { id =>  3,  parent_id =>  2 }
+		}
+	})
 	,"Check nodes after leaf delation from the Tree::";
 
 
 
 cmp_deeply
 	$tree->del_node( 2 )
-	,[ { id =>  2,  parent_id =>  1 }, { id =>  3,  parent_id =>  2 } ]
+	,[()
+		,{ id =>  2,  parent_id =>  1 }
+		,{ id =>  3,  parent_id =>  2 }
+	]
 	,"Delete branch from the Tree::";
 
 cmp_deeply
 	$tree
-	,noclass({ root =>  { id =>  1 }, nodes =>  {()
-		,1 =>  { id =>  1 }
+	,noclass({()
+		,root =>  subhashof({()
+			,id =>  1, parent_id =>  undef, children =>  ignore()
+		})
+		, nodes =>  {()
+			,1 =>  subhashof({ id =>  1, parent_id =>  undef, children =>  [] })
 	} })
 	,"Check nodes after branch delation from the Tree::";
 

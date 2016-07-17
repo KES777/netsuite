@@ -132,6 +132,9 @@ sub add_node {
 
 			push $self->{ broken }{ $node->{ parent_id } }->@*, $node;
 		}
+		else {
+			push $self->{ nodes }{ $node->{ parent_id } }{ children }->@*, $node;
+		}
 	}
 	else {
 		$self->root( $node );
@@ -154,21 +157,29 @@ sub del_node {
 	}
 
 
-	$nodes->{ $id }{ parent_id }  //  $self->root( undef );
-	my $deleted_nodes =  [ delete $nodes->{ $id } ];
+	# Get link to the removing node
+	my $sub_tree =  $nodes->{ $id };
 
-	# Delete all branches and leaves of deleted node
-	for my $node_id ( keys $nodes->%* ) {
-		my $node =  $nodes->{ $node_id };
-
-		next   unless $node;         # Node was deleted by recursive call
-
-		next   unless                         # Skip delatoin for ...
-			$node->{ parent_id  }             # ...root node
-			&&  $node->{ parent_id } eq $id;  # ...not children nodes
-
-		push @$deleted_nodes, $self->del_node( $node_id )->@*;
+	if( defined $sub_tree->{ parent_id } ) {
+		# We are deleting child node. Unlink it from the parent
+		my $parent_node =  $self->{ nodes }{ $sub_tree->{ parent_id } };
+		$parent_node->{ children }->@* =  grep{
+			$_->{ id } ne $id
+		} $parent_node->{ children }->@*;
 	}
+	else {
+		# We are deleting root node. Unlink it from the Tree::
+		$self->root( undef );
+	}
+
+	# Traverse subtree to get all deleted nodes
+	(my $deleted_nodes)->@* =
+		map{ { $_->%{ @NODE_PROPERTIES } } } # Remove internal data from nodes
+		(traverse{ $_ } $self, $sub_tree)->@*;
+
+	# Remove links from the tree to deleted children
+	my @ids =  map{ $_->{ id } } @$deleted_nodes;
+	delete $self->{ nodes }->@{ @ids };
 
 
 	return $deleted_nodes;
