@@ -37,7 +37,7 @@ cmp_deeply
 	,"Node can not refer to itself\n"
 	,"Node can not refer to itself";
 
-eval{ Tree::->new( [{ id =>  1, parent_id =>  2 }] ) };
+eval{ Tree::->new()->root({ id =>  1, parent_id =>  2 }) };
 cmp_deeply
 	$@ =~ s/ at.*$//r                                               #/
 	,"Root node can not have parent\n"

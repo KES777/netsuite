@@ -40,7 +40,23 @@ sub _init {
 sub root {
 	my $self =  shift;
 
-	return $self->{ root } =  shift   if @_;
+
+	if( @_ ) {
+		my $node =  shift;
+
+
+		if( $node ) { # $node is undef when we are removing root node
+			defined $node->{ parent_id }  and
+				die "Root node can not have parent";
+
+			defined $self->{ root }  and
+				die "Tree:: can contain only one root node";
+		}
+
+
+		return $self->{ root } =  $node;
+	}
+
 
 	return $self->{ root };
 }
@@ -60,17 +76,11 @@ sub add_node {
 		die "Node with specified ID already in the Tree::";
 
 
-	if( $self->root ) {
-		$node->{ parent_id }  //
-			die "Tree:: can contain only one root node";
-
+	if( defined $node->{ parent_id } ) {
 		!exists $self->{ nodes }{ $node->{ parent_id } }  and
 			die "No such parent in the Tree::";
 	}
 	else {
-		$node->{ parent_id }  and
-			die "Root node can not have parent";
-
 		$self->root( $node );
 	}
 
