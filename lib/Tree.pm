@@ -127,13 +127,14 @@ sub add_node {
 
 
 	if( defined $node->{ parent_id } ) {
-		if( !exists $self->{ nodes }{ $node->{ parent_id } } ) {
+		my $parent_id =  $node->{ parent_id };
+		if( !exists $self->{ nodes }{ $parent_id } ) {
 			die "No such parent in the Tree::"   unless $allow_orphan;
 
-			push $self->{ broken }{ $node->{ parent_id } }->@*, $node;
+			push $self->{ broken }{ $parent_id }->@*, $node;
 		}
 		else {
-			push $self->{ nodes }{ $node->{ parent_id } }{ children }->@*, $node;
+			push $self->{ nodes }{ $parent_id }{ children }->@*, $node;
 		}
 	}
 	else {
