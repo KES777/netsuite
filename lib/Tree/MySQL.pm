@@ -72,7 +72,28 @@ sub save {
 	#TODO: process errors
 	$sth->execute_array({ ArrayTupleFetch =>  sub{ shift @$nodes } });
 	$self->{ dbh }->commit;
+}
 
+
+
+sub _unlink_nodes {
+	my $self =  shift;
+
+	my $ids =  $self->SUPER::_unlink_nodes( @_ );
+	my $sth =  $self->{ dbh }->prepare('DELETE FROM trees WHERE id = ?');
+	(my $rows)->@* =  map{ [ $_ ] } @$ids; # Each tuple should be arrayref
+	$sth->execute_array({ ArrayTupleFetch =>  sub{ shift @$rows } });
+
+	return $ids;
+}
+
+
+sub del_node {
+	my $self =  shift;
+
+	my $deleted_nodes =  $self->SUPER::del_node( @_ );
+
+	return $deleted_nodes;
 }
 
 1;
