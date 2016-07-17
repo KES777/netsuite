@@ -174,6 +174,13 @@ sub del_node {
 
 
 
+sub get_node {
+	my( $self, $id ) =  @_;
+
+	return $self->{ nodes }{ $id };
+}
+
+
 sub save {
 }
 
