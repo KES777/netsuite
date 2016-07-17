@@ -16,16 +16,19 @@ our $DEBUG;
 
 
 sub traverse(&@) {
-	my( $code, $self, $curr_node ) =  @_;
+	my( $code, $self, $curr_node, $level ) =  @_;
 
 	$curr_node  //
 		die "Starting node should be supplied to traverse the Tree::";
 
+	$level //=  0;
+
+
 	local $_ =  $curr_node;
-	$self->$code();                          # Call $code in context of $self
+	$self->$code( $level );                  # Call $code in context of $self
 
 	for my $next_node ( $curr_node->{ children }->@* ) {
-		__SUB__->( $code, $self, $next_node );
+		__SUB__->( $code, $self, $next_node , $level +1 );
 	}
 }
 
