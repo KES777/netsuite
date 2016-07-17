@@ -141,8 +141,21 @@ sub add_node {
 		$self->root( $node );
 	}
 
+	delete $self->{ _level }; #TODO: IT
+
 
 	return $self->{ nodes }{ $node->{ id } } =  $node;
+}
+
+
+
+sub _unlink_nodes {
+	my( $self, $deleted_nodes ) =  @_;
+
+	my @ids =  map{ $_->{ id } } @$deleted_nodes;
+	delete $self->{ nodes }->@{ @ids };
+
+	return \@ids;
 }
 
 
@@ -157,6 +170,7 @@ sub del_node {
 		return [];
 	}
 
+	delete $self->{ _level }; #TODO: IT
 
 	# Get link to the removing node
 	my $sub_tree =  $nodes->{ $id };
@@ -179,8 +193,7 @@ sub del_node {
 		(traverse{ $_ } $sub_tree)->@*;
 
 	# Remove links from the tree to deleted children
-	my @ids =  map{ $_->{ id } } @$deleted_nodes;
-	delete $self->{ nodes }->@{ @ids };
+	$self->_unlink_nodes( $deleted_nodes );
 
 
 	return $deleted_nodes;
