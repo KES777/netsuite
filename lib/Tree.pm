@@ -5,9 +5,29 @@ use strict;
 use warnings;
 
 use Scalar::Util 'blessed';
+use feature 'current_sub';
+
+use Exporter 'import';
+our @EXPORT_OK =  qw/ traverse /;
+
 
 
 our $DEBUG;
+
+
+sub traverse(&@) {
+	my( $code, $self, $curr_node ) =  @_;
+
+	$curr_node  //
+		die "Starting node should be supplied to traverse the Tree::";
+
+	local $_ =  $curr_node;
+	$self->$code();                          # Call $code in context of $self
+
+	for my $next_node ( $curr_node->{ children }->@* ) {
+		__SUB__->( $code, $self, $next_node );
+	}
+}
 
 
 
