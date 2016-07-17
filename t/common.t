@@ -43,6 +43,16 @@ cmp_deeply
 	,"Root node can not have parent\n"
 	,"Root node can not have parent";
 
+$tree =  Tree::->new();
+$tree->add_node( { id =>  1, parent_id =>  2 }, 1 );
+cmp_deeply
+	$tree
+	,noclass({()
+		,broken =>  { 2 =>  [{ id=>1, parent_id=>2}] }
+		,nodes  =>  { 1 =>   { id=>1, parent_id=>2}  }
+	})
+	,"Create orphan node in the Tree::";
+
 
 $tree =  Tree::->new();
 $tree->add_node( { id =>  1 } );

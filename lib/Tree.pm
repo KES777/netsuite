@@ -64,7 +64,7 @@ sub root {
 
 
 sub add_node {
-	my( $self, $node ) =  @_;
+	my( $self, $node, $allow_orphan ) =  @_;
 
 	$node->{ id }  //
 		die "Node should have ID";
@@ -77,8 +77,11 @@ sub add_node {
 
 
 	if( defined $node->{ parent_id } ) {
-		!exists $self->{ nodes }{ $node->{ parent_id } }  and
-			die "No such parent in the Tree::";
+		if( !exists $self->{ nodes }{ $node->{ parent_id } } ) {
+			die "No such parent in the Tree::"   unless $allow_orphan;
+
+			push $self->{ broken }{ $node->{ parent_id } }->@*, $node;
+		}
 	}
 	else {
 		$self->root( $node );
