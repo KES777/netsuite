@@ -141,6 +141,8 @@ sub add_node {
 		$self->root( $node );
 	}
 
+	delete $self->{ _level }; #TODO: IT
+
 
 	return $self->{ nodes }{ $node->{ id } } =  $node;
 }
@@ -157,6 +159,7 @@ sub del_node {
 		return [];
 	}
 
+	delete $self->{ _level }; #TODO: IT
 
 	# Get link to the removing node
 	my $sub_tree =  $nodes->{ $id };
