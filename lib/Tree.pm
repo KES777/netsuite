@@ -13,6 +13,8 @@ our @EXPORT_OK =  qw/ traverse /;
 
 
 our $DEBUG;
+my @NODE_PROPERTIES =  qw/ id parent_id /;
+
 
 
 sub traverse(&@) {
@@ -179,6 +181,32 @@ sub get_node {
 
 	return $self->{ nodes }{ $id };
 }
+
+
+
+sub nodes_at_level {
+	my( $self, $level ) =  @_;
+
+	my $nodes;
+	unless( $self->{ _level } ) {
+		$nodes =  traverse {
+			my( $tree, $node_level ) =  @_;
+
+			push $tree->{ _level }[ $node_level ]->@*, $_;
+
+			return $_;
+		} $self, $self->root;
+	}
+
+	$nodes =  $self->{ _level }[ $level ]   if defined $level;
+
+	# Remove internal data from nodes
+	@$nodes =  map{ { $_->%{ @NODE_PROPERTIES } } } @$nodes;
+
+
+	return $nodes;
+}
+
 
 
 sub save {
